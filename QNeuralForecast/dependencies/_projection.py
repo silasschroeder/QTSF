@@ -8,20 +8,36 @@ dev = qml.device("default.qubit", wires=n_qubits)
 
 @qml.qnode(dev)
 def quantum_projection_circuit(inputs, weights):
-    # 1. Data Encoding: Map classical features to quantum state
-    # We assume inputs are pre-processed to match n_qubits
-    qml.AngleEmbedding(inputs, wires=range(n_qubits))
+    # 1. State Preparation / Data Encoding
+    # H -> Ry(arctan(x)) -> Rz(arctan(x^2))
+    for i in range(n_qubits):
+        qml.Hadamard(wires=i)
+        # Use accessing column i for all batches: inputs[..., i]
+        # This handles both batched inputs (batch, n_qubits) and single inputs (n_qubits)
+        feature = inputs[..., i]
+        qml.RY(torch.arctan(feature), wires=i)
+        qml.RZ(torch.arctan(feature**2), wires=i)
     
-    # 2. Variational Layers: Trainable quantum gates
-    # weights shape: (n_layers, n_qubits, 3) for StronglyEntangling
-    qml.StronglyEntanglingLayers(weights, wires=range(n_qubits))
+    # 2. Variational Layer (Entanglement + Rotation)
+    # Get number of layers from weights shape
+    n_layers = weights.shape[0] if len(weights.shape) > 2 else 1
     
-    # 3. Measurement: Return expectation values for each qubit
+    for l in range(n_layers):
+        # CNOT chain: 0->1, 1->2, ..., (n-1)->0
+        for i in range(n_qubits):
+            qml.CNOT(wires=[i, (i + 1) % n_qubits])
+            
+        # Rotations: R(alpha, beta, gamma)
+        # weights shape: (n_layers, n_qubits, 3)
+        for i in range(n_qubits):
+            qml.Rot(weights[l, i, 0], weights[l, i, 1], weights[l, i, 2], wires=i)
+    
+    # 3. Measurement
     return [qml.expval(qml.PauliZ(wires=i)) for i in range(n_qubits)]
 
 
 class QuantumProjection(nn.Module):
-    def __init__(self, input_size, output_size, n_qubits=4, n_layers=2):
+    def __init__(self, input_size, output_size, n_qubits=4, n_layers=1):
         super().__init__()
         self.n_qubits = n_qubits
         
@@ -29,6 +45,7 @@ class QuantumProjection(nn.Module):
         self.pre_net = nn.Linear(input_size, n_qubits)
         
         # 2. Quantum Layer
+        # Circuit uses n_layers blocks, each with one rotation per qubit (3 params)
         weight_shapes = {"weights": (n_layers, n_qubits, 3)}
         self.q_layer = qml.qnn.TorchLayer(quantum_projection_circuit, weight_shapes)
         
