@@ -24,3 +24,16 @@ The data comprises 3049 individual products from 3 categories and 7 departments,
    │
  ITEM_ID × STORE_ID
 ```
+
+Goals:
+- 25.02.2026:
+  - Include more models out of neural forecast ✅
+  - Include py files of neural forecast models ✅
+  - Learn where to modify py files for qml 
+  - Learn how to create modification
+  - (look at litlogger for proper metric & artifact handling)
+
+
+cross validation
+hpo
+early stopping
