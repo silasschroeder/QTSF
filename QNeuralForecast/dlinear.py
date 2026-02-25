@@ -1,7 +1,7 @@
 
 
 
-__all__ = ['MovingAvg', 'SeriesDecomp', 'DLinear']
+__all__ = ['MovingAvg', 'SeriesDecomp', 'QDLinear']
 
 
 from typing import Optional
@@ -14,6 +14,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from dependencies._base_model import BaseModel
+from dependencies._projection import QuantumProjection
 from dependencies.pytorch import MAE
 
 
@@ -51,8 +52,8 @@ class SeriesDecomp(nn.Module):
         return res, moving_mean
 
 
-class DLinear(BaseModel):
-    """DLinear
+class QDLinear(BaseModel):
+    """QDLinear
 
     Args:
         h (int): forecast horizon.
@@ -134,7 +135,7 @@ class DLinear(BaseModel):
         dataloader_kwargs=None,
         **trainer_kwargs
     ):
-        super(DLinear, self).__init__(
+        super(QDLinear, self).__init__(
             h=h,
             input_size=input_size,
             hist_exog_list=hist_exog_list,
@@ -179,12 +180,18 @@ class DLinear(BaseModel):
         # Decomposition
         self.decomp = SeriesDecomp(moving_avg_window)
 
-        self.linear_trend = nn.Linear(                                              ################################################
-            self.input_size, self.loss.outputsize_multiplier * h, bias=True         ########                                ########
-        )                                                                           ########    IMPORTANT FOR MY THESIS     ########
-        self.linear_season = nn.Linear(                                             ########                                ########
-            self.input_size, self.loss.outputsize_multiplier * h, bias=True         ########                                ########
-        )                                                                           ################################################
+        self.linear_trend = QuantumProjection(
+            self.input_size, self.loss.outputsize_multiplier * h
+        )
+        self.linear_season = QuantumProjection(
+            self.input_size, self.loss.outputsize_multiplier * h
+        )
+        # self.linear_trend = nn.Linear(                                              ################################################
+        #     self.input_size, self.loss.outputsize_multiplier * h, bias=True         ########                                ########
+        # )                                                                           ########    IMPORTANT FOR MY THESIS     ########
+        # self.linear_season = nn.Linear(                                             ########                                ########
+        #     self.input_size, self.loss.outputsize_multiplier * h, bias=True         ########                                ########
+        # )                                                                           ################################################
 
     def forward(self, windows_batch):
         # Parse windows_batch
