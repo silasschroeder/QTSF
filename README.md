@@ -37,3 +37,6 @@ Goals:
 cross validation
 hpo
 early stopping
+
+
+LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightning_logs`
