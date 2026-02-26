@@ -31,12 +31,23 @@ Goals:
   - Include py files of neural forecast models ✅
   - Learn where to modify py files for qml ✅
   - Learn how to create modification ✅
-  - (look at litlogger for proper metric & artifact handling)
+  - (look at litlogger for proper metric & artifact handling); CHANGE: look at any metric visualization tool (TensorBoard) ✅
+LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightning_logs`
+
+- 26.02.2026:
+  - create QPatchTST ✅
+  - create QTimesNet
+
+
+- Find reason for why exactly those 4 models
+  - Understand those 4 models
+  - Understand the changes made within the model structure
+  - Illustrate changes (or make it possible to explain based on an illustration of the base models)
+- Ask Jaakob/Pallavi for advice on the structure of quantum circuit
+- create QNHITS
 
 
 cross validation
 hpo
 early stopping
 
-
-LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightning_logs`

@@ -3,7 +3,7 @@
 
 __all__ = ['SinCosPosEncoding', 'Transpose', 'get_activation_fn', 'PositionalEncoding', 'Coord2dPosEncoding',
            'Coord1dPosEncoding', 'positional_encoding', 'PatchTST_backbone', 'Flatten_Head', 'TSTiEncoder',
-           'TSTEncoder', 'TSTEncoderLayer', 'PatchTST']
+           'TSTEncoder', 'TSTEncoderLayer', 'QPatchTST']
 
 
 import math
@@ -20,6 +20,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from dependencies._base_model import BaseModel
 from dependencies._modules import RevIN
+from dependencies._projection import QuantumProjection
 from dependencies.pytorch import MAE
 
 
@@ -265,7 +266,7 @@ class PatchTST_backbone(nn.Module):
 
         # model
         z = self.backbone(z)  # z: [bs x nvars x hidden_size x patch_num]
-        z = self.head(z)  # z: [bs x nvars x h]                                                     ####### IMPORTANT FOR MY THESIS
+        z = self.head(z)  # z: [bs x nvars x h]
 
         # denorm
         if self.revin:
@@ -296,11 +297,11 @@ class Flatten_Head(nn.Module):
             self.flattens = nn.ModuleList()
             for i in range(self.n_vars):
                 self.flattens.append(nn.Flatten(start_dim=-2))
-                self.linears.append(nn.Linear(nf, h * c_out))                                       ####### IMPORTANT FOR MY THESIS
+                self.linears.append(QuantumProjection(nf, h * c_out))                                       ####### IMPORTANT FOR MY THESIS
                 self.dropouts.append(nn.Dropout(head_dropout))
         else:
             self.flatten = nn.Flatten(start_dim=-2)
-            self.linear = nn.Linear(nf, h * c_out)
+            self.linear = QuantumProjection(nf, h * c_out)                                                  ####### IMPORTANT FOR MY THESIS
             self.dropout = nn.Dropout(head_dropout)
 
     def forward(self, x):  # x: [bs x nvars x hidden_size x patch_num]
@@ -808,8 +809,8 @@ class _ScaledDotProductAttention(nn.Module):
             return output, attn_weights, attn_scores
 
 
-class PatchTST(BaseModel):
-    """PatchTST
+class QPatchTST(BaseModel):
+    """QPatchTST
 
     The PatchTST model is an efficient Transformer-based model for multivariate time series forecasting.
 
@@ -929,7 +930,7 @@ class PatchTST(BaseModel):
         dataloader_kwargs=None,
         **trainer_kwargs
     ):
-        super(PatchTST, self).__init__(
+        super(QPatchTST, self).__init__(
             h=h,
             input_size=input_size,
             stat_exog_list=stat_exog_list,
