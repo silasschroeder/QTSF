@@ -36,7 +36,8 @@ LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightni
 
 - 26.02.2026:
   - create QPatchTST ✅
-  - create QTimesNet
+  - create QTimesNet ✅
+  - create QNHITS ✅
 
 
 - Find reason for why exactly those 4 models
@@ -44,7 +45,6 @@ LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightni
   - Understand the changes made within the model structure
   - Illustrate changes (or make it possible to explain based on an illustration of the base models)
 - Ask Jaakob/Pallavi for advice on the structure of quantum circuit
-- create QNHITS
 
 
 cross validation

@@ -16,6 +16,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from dependencies._base_model import BaseModel
+from dependencies._projection import QuantumProjection
 from dependencies.pytorch import MAE
 
 
@@ -139,7 +140,7 @@ class NHITSBlock(nn.Module):
                 # raise NotImplementedError('dropout')
                 hidden_layers.append(nn.Dropout(p=self.dropout_prob))
 
-        output_layer = [nn.Linear(in_features=mlp_units[-1][1], out_features=n_theta)]              ########    IMPORTANT FOR MY THESIS
+        output_layer = [QuantumProjection(mlp_units[-1][1], n_theta)]                           ########    IMPORTANT FOR MY THESIS
         layers = hidden_layers + output_layer
         self.layers = nn.Sequential(*layers)
         self.basis = basis
@@ -184,12 +185,12 @@ class NHITSBlock(nn.Module):
 
         # Compute local projection weights and projection
         theta = self.layers(insample_y)
-        backcast, forecast = self.basis(theta)                                                          ########    IMPORTANT FOR MY THESIS
+        backcast, forecast = self.basis(theta)
         return backcast, forecast
 
 
-class NHITS(BaseModel):
-    """NHITS
+class QNHITS(BaseModel):
+    """QNHITS
 
     The Neural Hierarchical Interpolation for Time Series (NHITS), is an MLP-based deep
     neural architecture with backward and forward residual links. NHITS tackles volatility and
@@ -291,7 +292,7 @@ class NHITS(BaseModel):
     ):
 
         # Inherit BaseWindows class
-        super(NHITS, self).__init__(
+        super(QNHITS, self).__init__(
             h=h,
             input_size=input_size,
             futr_exog_list=futr_exog_list,
