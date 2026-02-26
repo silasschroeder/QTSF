@@ -17,6 +17,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from dependencies._base_model import BaseModel
 from dependencies._modules import DataEmbedding
+from dependencies._projection import QuantumProjection
 from dependencies.pytorch import MAE
 
 
@@ -122,8 +123,8 @@ class TimesBlock(nn.Module):
         return res
 
 
-class TimesNet(BaseModel):
-    """TimesNet
+class QTimesNet(BaseModel):
+    """QTimesNet
 
     The TimesNet univariate model tackles the challenge of modeling multiple intraperiod and interperiod temporal variations.
 
@@ -217,7 +218,7 @@ class TimesNet(BaseModel):
         dataloader_kwargs=None,
         **trainer_kwargs
     ):
-        super(TimesNet, self).__init__(
+        super(QTimesNet, self).__init__(
             h=h,
             input_size=input_size,
             hist_exog_list=hist_exog_list,
@@ -279,7 +280,7 @@ class TimesNet(BaseModel):
         self.encoder_layers = encoder_layers
         self.layer_norm = nn.LayerNorm(hidden_size)
         self.predict_linear = nn.Linear(self.input_size, self.h + self.input_size)                              ####### IMPORTANT FOR MY THESIS
-        self.projection = nn.Linear(hidden_size, self.c_out, bias=True)                                         ####### IMPORTANT FOR MY THESIS
+        self.projection = QuantumProjection(hidden_size, self.c_out)                                            ####### IMPORTANT FOR MY THESIS
 
     def forward(self, windows_batch):
 
