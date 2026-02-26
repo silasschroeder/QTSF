@@ -184,6 +184,7 @@ class PatchTST_backbone(nn.Module):
         revin=True,
         affine=True,
         subtract_last=False,
+        circuit_device="default.qubit",
     ):
 
         super().__init__()
@@ -247,6 +248,7 @@ class PatchTST_backbone(nn.Module):
                 h,
                 c_out,
                 head_dropout=head_dropout,
+                circuit_device=circuit_device,
             )
 
     def forward(self, z):  # z: [bs x nvars x seq_len]
@@ -284,7 +286,9 @@ class Flatten_Head(nn.Module):
     Flatten_Head
     """
 
-    def __init__(self, individual, n_vars, nf, h, c_out, head_dropout=0):
+    def __init__(
+        self, individual, n_vars, nf, h, c_out, head_dropout=0, circuit_device="default.qubit"
+    ):
         super().__init__()
 
         self.individual = individual
@@ -297,11 +301,15 @@ class Flatten_Head(nn.Module):
             self.flattens = nn.ModuleList()
             for i in range(self.n_vars):
                 self.flattens.append(nn.Flatten(start_dim=-2))
-                self.linears.append(QuantumProjection(nf, h * c_out))                                       ####### IMPORTANT FOR MY THESIS
+                self.linears.append(
+                    QuantumProjection(nf, h * c_out, circuit_device=circuit_device)
+                )  ####### IMPORTANT FOR MY THESIS
                 self.dropouts.append(nn.Dropout(head_dropout))
         else:
             self.flatten = nn.Flatten(start_dim=-2)
-            self.linear = QuantumProjection(nf, h * c_out)                                                  ####### IMPORTANT FOR MY THESIS
+            self.linear = QuantumProjection(
+                nf, h * c_out, circuit_device=circuit_device
+            )  ####### IMPORTANT FOR MY THESIS
             self.dropout = nn.Dropout(head_dropout)
 
     def forward(self, x):  # x: [bs x nvars x hidden_size x patch_num]
@@ -928,6 +936,7 @@ class QPatchTST(BaseModel):
         lr_scheduler=None,
         lr_scheduler_kwargs=None,
         dataloader_kwargs=None,
+        circuit_device="default.qubit",
         **trainer_kwargs
     ):
         super(QPatchTST, self).__init__(
@@ -1019,6 +1028,8 @@ class QPatchTST(BaseModel):
             revin=revin,
             affine=revin_affine,
             subtract_last=revin_subtract_last,
+            quantum=True,
+            circuit_device=circuit_device,
         )
 
     def forward(self, windows_batch):  # x: [batch, input_size]

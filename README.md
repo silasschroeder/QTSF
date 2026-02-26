@@ -38,6 +38,22 @@ LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightni
   - create QPatchTST ✅
   - create QTimesNet ✅
   - create QNHITS ✅
+  - check how model currently is trained (noise free, nisq simulation, nisq)
+  - train model with all platforms
+
+  - cross validation (Rolling forecast origin evaluation / time series cross validation)
+  - hpo
+  - early stopping
+  - Random Seeds & Reproducibility
+    torch.manual_seed(42)
+    np.random.seed(42)
+    random.seed(42)
+  - Mehrere Runs pro Modell (z. B. 3 Seeds) --> Mittelwert + Standardabweichung
+  - Evaluation Metrics: MAE RMSE MAPE sMAPE (Optional:MASE)
+  - Laufzeiten: Trainingszeit pro Epoche, Gesamttrainingszeit, Inferenzzeit
+  - Parameter Fairness: Parameteranzahl, `sum(p.numel() for p in model.parameters())`
+  - Naive Baseline: Last Value Forecast, Seasonal Naive Forecast
+- Diebold-Mariano Test oder gepaarter t-Test auf Fehler (Sind unterschiede signifikant oder nur Zufall)
 
 
 - Find reason for why exactly those 4 models
@@ -45,9 +61,3 @@ LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightni
   - Understand the changes made within the model structure
   - Illustrate changes (or make it possible to explain based on an illustration of the base models)
 - Ask Jaakob/Pallavi for advice on the structure of quantum circuit
-
-
-cross validation
-hpo
-early stopping
-

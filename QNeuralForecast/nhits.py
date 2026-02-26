@@ -101,6 +101,7 @@ class NHITSBlock(nn.Module):
         pooling_mode: str,
         dropout_prob: float,
         activation: str,
+        circuit_device="default.qubit",
     ):
         super().__init__()
 
@@ -140,7 +141,9 @@ class NHITSBlock(nn.Module):
                 # raise NotImplementedError('dropout')
                 hidden_layers.append(nn.Dropout(p=self.dropout_prob))
 
-        output_layer = [QuantumProjection(mlp_units[-1][1], n_theta)]                           ########    IMPORTANT FOR MY THESIS
+        output_layer = [
+            QuantumProjection(mlp_units[-1][1], n_theta, circuit_device=circuit_device)
+        ]  ########    IMPORTANT FOR MY THESIS
         layers = hidden_layers + output_layer
         self.layers = nn.Sequential(*layers)
         self.basis = basis
@@ -288,6 +291,7 @@ class QNHITS(BaseModel):
         lr_scheduler=None,
         lr_scheduler_kwargs=None,
         dataloader_kwargs=None,
+        circuit_device="default.qubit",
         **trainer_kwargs,
     ):
 
@@ -341,6 +345,7 @@ class QNHITS(BaseModel):
             interpolation_mode=interpolation_mode,
             dropout_prob_theta=dropout_prob_theta,
             activation=activation,
+            circuit_device=circuit_device,
         )
         self.blocks = torch.nn.ModuleList(blocks)
 
@@ -360,6 +365,7 @@ class QNHITS(BaseModel):
         futr_input_size,
         hist_input_size,
         stat_input_size,
+        circuit_device="default.qubit",
     ):
 
         block_list = []
@@ -393,6 +399,7 @@ class QNHITS(BaseModel):
                     basis=basis,
                     dropout_prob=dropout_prob_theta,
                     activation=activation,
+                    circuit_device=circuit_device,
                 )
 
                 # Select type of evaluation and apply it to all layers of block

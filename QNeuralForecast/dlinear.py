@@ -133,6 +133,7 @@ class QDLinear(BaseModel):
         lr_scheduler=None,
         lr_scheduler_kwargs=None,
         dataloader_kwargs=None,
+        circuit_device="default.qubit",
         **trainer_kwargs
     ):
         super(QDLinear, self).__init__(
@@ -181,10 +182,10 @@ class QDLinear(BaseModel):
         self.decomp = SeriesDecomp(moving_avg_window)
 
         self.linear_trend = QuantumProjection(
-            self.input_size, self.loss.outputsize_multiplier * h
+            self.input_size, self.loss.outputsize_multiplier * h, circuit_device=circuit_device
         )
         self.linear_season = QuantumProjection(
-            self.input_size, self.loss.outputsize_multiplier * h
+            self.input_size, self.loss.outputsize_multiplier * h, circuit_device=circuit_device
         )
         # self.linear_trend = nn.Linear(                                              ################################################
         #     self.input_size, self.loss.outputsize_multiplier * h, bias=True         ########                                ########

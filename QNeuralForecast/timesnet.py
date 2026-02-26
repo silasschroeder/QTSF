@@ -216,6 +216,7 @@ class QTimesNet(BaseModel):
         lr_scheduler=None,
         lr_scheduler_kwargs=None,
         dataloader_kwargs=None,
+        circuit_device="default.qubit",
         **trainer_kwargs
     ):
         super(QTimesNet, self).__init__(
@@ -280,7 +281,9 @@ class QTimesNet(BaseModel):
         self.encoder_layers = encoder_layers
         self.layer_norm = nn.LayerNorm(hidden_size)
         self.predict_linear = nn.Linear(self.input_size, self.h + self.input_size)                              ####### IMPORTANT FOR MY THESIS
-        self.projection = QuantumProjection(hidden_size, self.c_out)                                            ####### IMPORTANT FOR MY THESIS
+        self.projection = QuantumProjection(
+            hidden_size, self.c_out, circuit_device=circuit_device
+        )  ####### IMPORTANT FOR MY THESIS
 
     def forward(self, windows_batch):
 
