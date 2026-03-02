@@ -38,18 +38,22 @@ LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightni
   - create QPatchTST ✅
   - create QTimesNet ✅
   - create QNHITS ✅
-  - check how model currently is trained (noise free, nisq simulation, nisq)
-  - train model with all platforms
 
-  - cross validation (Rolling forecast origin evaluation / time series cross validation)
+- 02.03.2026
+  - device:
+    - check how model currently is trained (noise free, nisq simulation, nisq)
+    - create additional for loop with training devices
+  - cross validation (Rolling forecast origin evaluation / time series cross validation) ✅
   - hpo
-  - early stopping
   - Random Seeds & Reproducibility
-    torch.manual_seed(42)
-    np.random.seed(42)
-    random.seed(42)
-  - Mehrere Runs pro Modell (z. B. 3 Seeds) --> Mittelwert + Standardabweichung
+    - torch.manual_seed(42)
+    - np.random.seed(42)
+    - random.seed(42)
+  - early stopping
   - Evaluation Metrics: MAE RMSE MAPE sMAPE (Optional:MASE)
+  
+
+  - Mehrere Runs pro Modell (z. B. 3 Seeds) --> Mittelwert + Standardabweichung
   - Laufzeiten: Trainingszeit pro Epoche, Gesamttrainingszeit, Inferenzzeit
   - Parameter Fairness: Parameteranzahl, `sum(p.numel() for p in model.parameters())`
   - Naive Baseline: Last Value Forecast, Seasonal Naive Forecast
