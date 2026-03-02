@@ -40,20 +40,15 @@ LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightni
   - create QNHITS ✅
 
 - 02.03.2026
+  - hpo (implemented via Optuna) ✅
+  - Random Seeds & Reproducibility ✅
+  - Evaluation Metrics: MAE RMSE MAPE sMAPE (Optional:MASE) ✅
+  - cross validation (Rolling forecast origin evaluation / time series cross validation) ✅
+  - early stopping
   - device:
     - check how model currently is trained (noise free, nisq simulation, nisq)
     - create additional for loop with training devices
-  - cross validation (Rolling forecast origin evaluation / time series cross validation) ✅
-  - hpo
-  - Random Seeds & Reproducibility
-    - torch.manual_seed(42)
-    - np.random.seed(42)
-    - random.seed(42)
-  - early stopping
-  - Evaluation Metrics: MAE RMSE MAPE sMAPE (Optional:MASE)
   
-
-  - Mehrere Runs pro Modell (z. B. 3 Seeds) --> Mittelwert + Standardabweichung
   - Laufzeiten: Trainingszeit pro Epoche, Gesamttrainingszeit, Inferenzzeit
   - Parameter Fairness: Parameteranzahl, `sum(p.numel() for p in model.parameters())`
   - Naive Baseline: Last Value Forecast, Seasonal Naive Forecast
