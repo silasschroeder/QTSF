@@ -1,0 +1,14 @@
+pandas==2.2.3
+numpy==1.24.3
+matplotlib==3.10.1
+matplotlib-inline==0.1.7
+optuna==4.6.0
+torch==2.9.1
+torch-max-mem==0.1.4
+torch-ppr==0.0.8
+torchmetrics==1.8.2
+pytorch-lightning==2.6.1
+wandb==0.19.11
+neuralforecast==3.1.4
+pennylane==0.44.0
+pennylane_lightning==0.44.0
