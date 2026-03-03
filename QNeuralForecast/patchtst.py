@@ -1028,7 +1028,6 @@ class QPatchTST(BaseModel):
             revin=revin,
             affine=revin_affine,
             subtract_last=revin_subtract_last,
-            quantum=True,
             circuit_device=circuit_device,
         )
 
