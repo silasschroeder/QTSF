@@ -31,8 +31,7 @@ Goals:
   - Include py files of neural forecast models ✅
   - Learn where to modify py files for qml ✅
   - Learn how to create modification ✅
-  - (look at litlogger for proper metric & artifact handling); CHANGE: look at any metric visualization tool (TensorBoard) ✅
-LOGS: `tensorboard --logdir rossmann-store-sales/rossmann-solution-silas/lightning_logs`
+  - (look at litlogger for proper metric & artifact handling); Currently W&B, Previously TensorBoard ✅
 
 - 26.02.2026:
   - create QPatchTST ✅
