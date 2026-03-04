@@ -50,9 +50,9 @@ Goals:
 
 TODO:
 - Sync Jaakob: Are Quantum Devices available? If not so, contact Sarah
-- Laufzeiten: Trainingszeit pro Epoche, Gesamttrainingszeit, Inferenzzeit
-- Parameter Fairness: Parameteranzahl, `sum(p.numel() for p in model.parameters())`
-- Naive Baseline: Last Value Forecast, Seasonal Naive Forecast
+- Laufzeiten: Trainingszeit pro Epoche, Gesamttrainingszeit, Inferenzzeit ✅
+- Parameter Fairness: Parameteranzahl, `sum(p.numel() for p in model.parameters())` ✅
+- Naive Baseline: Last Value Forecast ✅
 - Diebold-Mariano Test oder gepaarter t-Test auf Fehler (Sind unterschiede signifikant oder nur Zufall)
 
 - Maybe: Adjust Circuit
