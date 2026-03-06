@@ -48,12 +48,23 @@ Goals:
     - check how model currently is trained (noise free, nisq simulation, nisq) ✅
     - create additional for loop with training devices ✅
 
+05.03.2026:
+- Understand DLinear ✅
+- Create Visualisation DLinear
+- Understand NHITS ✅
+- Create Visualisation NHITS
+- Understand PatchTST
+- Create Visualisation PatchTST
+- Understand TimesNet
+- Create Visualisation TimesNet
+- learn how to use aer (https://pennylane.ai/qml/demos/tutorial_how_to_import_qiskit_noise_models)
+- Maybe use MLFlow instead of W&B
+
 TODO:
 - Sync Jaakob: Are Quantum Devices available? If not so, contact Sarah
 - Laufzeiten: Trainingszeit pro Epoche, Gesamttrainingszeit, Inferenzzeit ✅
 - Parameter Fairness: Parameteranzahl, `sum(p.numel() for p in model.parameters())` ✅
 - Naive Baseline: Last Value Forecast ✅
-- Diebold-Mariano Test oder gepaarter t-Test auf Fehler (Sind unterschiede signifikant oder nur Zufall)
 
 - Maybe: Adjust Circuit
 - Maybe: Adjust circuit incoorperation within models
@@ -67,3 +78,12 @@ Big TODO for thesis:
 - measuring one qubit exactly once may not lead to a value that is the most common/optimal one. 
 - how often is the measuring done?
 - how often should the measuring be done?
+- How is retraining handled? Can new data be simply included? Is there an option to parse it in the predict function for context?
+- Shap analysis (which feature is important, which not)
+
+New Goals:
+- Understand how models are constructed? Are there better positions for circuit? 
+- Circuit adjustment
+- MLflow instead of W&B
+- Noise simulation sadly didnt work with IBM tools
+- Writing thesis
