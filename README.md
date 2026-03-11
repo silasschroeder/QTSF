@@ -33,12 +33,16 @@ Goals:
 - Adjust Circuit based on research papers ✅
 
 11.03.2026:
-- Solve problem: Predictions can only be made given the customers
-- Make models include newer data
-- Optimize Parameters of Quantum Circuit(s)
-- Include visualizations into model presentation
+- Solve problem: Predictions can only be made given the customers ✅
+- Save models ✅
+- Make models include newer data (nf.predict(df=…)) ✅
+
+12.03.2026:
+- rethink model selection based on https://nixtlaverse.nixtla.io/neuralforecast/docs/capabilities/overview.html
 
 Later:
+- Optimize Parameters of Quantum Circuit(s)
+- Include visualizations into model presentation
 - Understand DLinear ✅
 - Create Visualisation DLinear
 - Understand NHITS ✅
@@ -64,3 +68,10 @@ New Goals:
 - Circuit adjustment
 - Noise simulation sadly didnt work with IBM tools
 - Writing thesis
+
+Additional Information:
+Model	    hist_exog futr_exog	stat_exog
+NHITS	    ✅	       ✅	      ✅
+TimesNet	❌	       ✅	      ❌
+DLinear	  ❌	       ❌	      ❌
+PatchTST	❌	       ❌	      ❌
