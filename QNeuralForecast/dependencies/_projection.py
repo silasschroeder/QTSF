@@ -1,23 +1,40 @@
 from torch import nn
 import torch
 import pennylane as qml
+from qiskit_aer.noise import NoiseModel
+from qiskit.providers.fake_provider import GenericBackendV2
 
 # Define the quantum device
 n_qubits = 4  # Adjust based on simulation speed (4-8 is usually fast)
-# dev = qml.device("default.qubit", wires=n_qubits)
 
-# Noise parameters — calibrated to approximate typical NISQ error rates.
-# Depolarizing: ~1% per gate (IBM heavy-hex devices: 0.1–2%)
-# Amplitude damping: ~0.5% models T1 relaxation during gate execution
-DEPOLARIZING_PROB = 0.01
-AMPLITUDE_DAMPING_GAMMA = 0.005 # https://pennylane.ai/qml/demos/tutorial_noisy_circuits
+# Hardware-inspired noise parameters for realistic NISQ simulation
+# Based on typical quantum hardware characteristics:
+# - IBM Quantum devices: 0.1-2% single-qubit, 1-5% two-qubit gate errors
+# - Reference: Qiskit Aer noise model tutorials (qiskit.github.io/qiskit-aer/)
+# - T1/T2 relaxation times: ~50-70μs typical for superconducting qubits
+#
+# The values below are calibrated to approximate mid-range NISQ device performance:
+HARDWARE_NOISE_1Q = 0.015  # 1.5% single-qubit depolarizing error
+HARDWARE_NOISE_2Q = 0.035  # 3.5% two-qubit depolarizing error
+HARDWARE_NOISE_T1 = 0.01   # 1% amplitude damping (T1 relaxation)
 
 def get_quantum_circuit(device_name="default.qubit"):
     dev = qml.device(device_name, wires=n_qubits)
     noisy = (device_name == "default.mixed")
 
-    @qml.qnode(dev)
+    #@qml.qnode(dev)
+    @qml.qnode(dev, interface="torch", diff_method="best")
     def quantum_projection_circuit(inputs, weights):
+        # Define noise parameters based on simulation type
+        if noisy:
+            # Hardware-inspired noise: realistic error rates from NISQ devices
+            depol_1q = HARDWARE_NOISE_1Q
+            depol_2q = HARDWARE_NOISE_2Q
+            amp_damp = HARDWARE_NOISE_T1
+        else:
+            # No noise (ideal simulation)
+            depol_1q = depol_2q = amp_damp = 0.0
+
         # 1. State Preparation / Data Encoding
         # H -> Ry(arctan(x)) -> Rz(arctan(x^2))
         for i in range(n_qubits):
@@ -25,10 +42,10 @@ def get_quantum_circuit(device_name="default.qubit"):
             feature = inputs[..., i]
             qml.RY(torch.arctan(feature), wires=i)
             qml.RZ(torch.arctan(feature**2), wires=i)
-            # Noise after encoding (only on density-matrix device)
+            # Noise after encoding
             if noisy:
-                qml.DepolarizingChannel(DEPOLARIZING_PROB, wires=i)
-                qml.AmplitudeDamping(AMPLITUDE_DAMPING_GAMMA, wires=i)
+                qml.DepolarizingChannel(depol_1q, wires=i)
+                qml.AmplitudeDamping(amp_damp, wires=i)
 
         # 2. Variational Layer (Entanglement + Rotation)
         # weights shape: (n_layers, n_qubits, 3)
@@ -40,15 +57,15 @@ def get_quantum_circuit(device_name="default.qubit"):
                 qml.CNOT(wires=[i, (i + 1) % n_qubits])
                 # Two-qubit gates have higher error rates — apply to both qubits
                 if noisy:
-                    qml.DepolarizingChannel(DEPOLARIZING_PROB * 2, wires=i)
-                    qml.DepolarizingChannel(DEPOLARIZING_PROB * 2, wires=(i + 1) % n_qubits)
+                    qml.DepolarizingChannel(depol_2q, wires=i)
+                    qml.DepolarizingChannel(depol_2q, wires=(i + 1) % n_qubits)
 
             # Rotations: R(alpha, beta, gamma)
             for i in range(n_qubits):
                 qml.Rot(weights[l, i, 0], weights[l, i, 1], weights[l, i, 2], wires=i)
                 if noisy:
-                    qml.DepolarizingChannel(DEPOLARIZING_PROB, wires=i)
-                    qml.AmplitudeDamping(AMPLITUDE_DAMPING_GAMMA, wires=i)
+                    qml.DepolarizingChannel(depol_1q, wires=i)
+                    qml.AmplitudeDamping(amp_damp, wires=i)
 
         # 3. Measurement
         return [qml.expval(qml.PauliZ(wires=i)) for i in range(n_qubits)]
@@ -60,18 +77,18 @@ class QuantumProjection(nn.Module):
     def __init__(self, input_size, output_size, n_qubits=4, n_layers=1, circuit_device="default.qubit"):
         super().__init__()
         self.n_qubits = n_qubits
-        
+
         # 1. Compress input to fit on quantum chip
         self.pre_net = nn.Linear(input_size, n_qubits)
-        
+
         # 2. Quantum Layer
         # Circuit uses n_layers blocks, each with one rotation per qubit (3 params)
         weight_shapes = {"weights": (n_layers, n_qubits, 3)}
-        
+
         # Get circuit for the specific device
         self.circuit = get_quantum_circuit(circuit_device)
         self.q_layer = qml.qnn.TorchLayer(self.circuit, weight_shapes)
-        
+
         # 3. Expand output to forecast horizon
         self.post_net = nn.Linear(n_qubits, output_size)
 
