@@ -38,7 +38,8 @@ Goals:
 - Make models include newer data (nf.predict(df=…)) ✅
 
 12.03.2026:
-- rethink model selection based on https://nixtlaverse.nixtla.io/neuralforecast/docs/capabilities/overview.html
+- rethink model selection based on https://nixtlaverse.nixtla.io/neuralforecast/docs/capabilities/overview.html ✅
+- individualize the HPO for each model due to different architectures ✅
 
 Later:
 - Optimize Parameters of Quantum Circuit(s)
