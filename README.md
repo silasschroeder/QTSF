@@ -40,6 +40,7 @@ Goals:
 12.03.2026:
 - rethink model selection based on https://nixtlaverse.nixtla.io/neuralforecast/docs/capabilities/overview.html ✅
 - individualize the HPO for each model due to different architectures ✅
+- Do Data Understanding (watch kaggle and recreate script) ✅
 
 Later:
 - Optimize Parameters of Quantum Circuit(s)
