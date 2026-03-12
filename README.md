@@ -71,7 +71,8 @@ New Goals:
 
 Additional Information:
 Model	    hist_exog futr_exog	stat_exog
-NHITS	    ✅	       ✅	      ✅
-TimesNet	❌	       ✅	      ❌
 DLinear	  ❌	       ❌	      ❌
-PatchTST	❌	       ❌	      ❌
+PatchTST	❌	       ❌	      ❌ <-- removed from project
+TimesNet	❌	       ✅	      ❌
+DeepAR    ❌        ✅        ✅
+NHITS	    ✅	       ✅	      ✅
