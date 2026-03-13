@@ -43,10 +43,11 @@ Goals:
 - Do Data Understanding (watch kaggle and recreate script) ✅
 
 13.03.2026:
-- Check if metrics get logged onto mlflow
-- Let results run on Databricks
+- Check if metrics get logged onto mlflow ✅
+- Let results run on Databricks ✅
 - Adjust Business Understanding:
   - why chosen models
+- write modeling
 
 Later:
 - Optimize Parameters of Quantum Circuit(s)

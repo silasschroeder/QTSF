@@ -1,8 +1,6 @@
 from torch import nn
 import torch
 import pennylane as qml
-from qiskit_aer.noise import NoiseModel
-from qiskit.providers.fake_provider import GenericBackendV2
 
 # Define the quantum device
 n_qubits = 4  # Adjust based on simulation speed (4-8 is usually fast)
