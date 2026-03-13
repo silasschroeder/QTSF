@@ -42,6 +42,12 @@ Goals:
 - individualize the HPO for each model due to different architectures ✅
 - Do Data Understanding (watch kaggle and recreate script) ✅
 
+13.03.2026:
+- Check if metrics get logged onto mlflow
+- Let results run on Databricks
+- Adjust Business Understanding:
+  - why chosen models
+
 Later:
 - Optimize Parameters of Quantum Circuit(s)
 - Include visualizations into model presentation
@@ -49,8 +55,8 @@ Later:
 - Create Visualisation DLinear
 - Understand NHITS ✅
 - Create Visualisation NHITS
-- Understand PatchTST
-- Create Visualisation PatchTST
+- Understand DeepAR
+- Create Visualisation DeepAR
 - Understand TimesNet
 - Create Visualisation TimesNet
 - Find reason for why exactly those 4 models
@@ -62,8 +68,6 @@ Big TODO for thesis:
 - measuring one qubit exactly once may not lead to a value that is the most common/optimal one. 
 - how often is the measuring done?
 - how often should the measuring be done?
-- How is retraining handled? Can new data be simply included? Is there an option to parse it in the predict function for context?
-- Shap analysis (which feature is important, which not)
 
 New Goals:
 - Understand how models are constructed? Are there better positions for circuit? 
