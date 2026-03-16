@@ -49,8 +49,8 @@ Goals:
 
 16.03.2026:
 - Solve ValueError: Model QDLinear is not supported for saving. (probably for all q models) ✅
-- analyze behaviour of input variables in qlstm and my models (write about it in modeling)
 - include qulacs as a noise simulator
+- analyze behaviour of input variables in qlstm and my models (write about it in modeling)
 
 Later:
 - write modeling
