@@ -45,11 +45,16 @@ Goals:
 13.03.2026:
 - Check if metrics get logged onto mlflow ✅
 - Let results run on Databricks ✅
-- Adjust Business Understanding:
-  - why chosen models
-- write modeling
+- Include IBM API (Blocked due to conversation with stefan)
+
+16.03.2026:
+- Solve ValueError: Model QDLinear is not supported for saving. (probably for all q models) ✅
+- analyze behaviour of input variables in qlstm and my models (write about it in modeling)
+- include qulacs as a noise simulator
 
 Later:
+- write modeling
+- transfer github
 - Optimize Parameters of Quantum Circuit(s)
 - Include visualizations into model presentation
 - Understand DLinear ✅
@@ -72,7 +77,6 @@ Big TODO for thesis:
 
 New Goals:
 - Understand how models are constructed? Are there better positions for circuit? 
-- Circuit adjustment
 - Noise simulation sadly didnt work with IBM tools
 - Writing thesis
 
