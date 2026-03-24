@@ -49,12 +49,13 @@ def get_quantum_circuit(device_name="default.qubit"):
             resilience_level=0,
             seed_transpiler=42,
         )
+        use_shots = SHOTS
     else:
         dev = qml.device(device_name, wires=n_qubits)
+        use_shots = None
     noisy = (device_name == "default.mixed")
 
-    #@qml.qnode(dev)
-    @qml.qnode(dev, interface="torch", diff_method="best", shots=SHOTS)
+    @qml.qnode(dev, interface="torch", diff_method="best", shots=use_shots)
     def quantum_projection_circuit(inputs, weights):
         # Define noise parameters based on simulation type
         if noisy:
