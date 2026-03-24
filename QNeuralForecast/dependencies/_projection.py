@@ -1,6 +1,11 @@
 from torch import nn
 import torch
 import pennylane as qml
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Define the quantum device
 n_qubits = 4  # Adjust based on simulation speed (4-8 is usually fast)
@@ -15,13 +20,41 @@ n_qubits = 4  # Adjust based on simulation speed (4-8 is usually fast)
 HARDWARE_NOISE_1Q = 0.015  # 1.5% single-qubit depolarizing error
 HARDWARE_NOISE_2Q = 0.035  # 3.5% two-qubit depolarizing error
 HARDWARE_NOISE_T1 = 0.01   # 1% amplitude damping (T1 relaxation)
+SHOTS = 1024
 
 def get_quantum_circuit(device_name="default.qubit"):
-    dev = qml.device(device_name, wires=n_qubits)
+    if device_name == "qiskit.remote":
+        from qiskit_ibm_runtime import QiskitRuntimeService
+
+        IBM_API_TOKEN = os.environ.get("IBM_API_TOKEN")
+        IBM_CRN = os.environ.get("IBM_CRN")
+
+        if not IBM_API_TOKEN or not IBM_CRN:
+            raise ValueError(
+                "IBM_API_TOKEN and IBM_CRN environment variables must be set "
+                "to use qiskit.remote device"
+            )
+
+        service = QiskitRuntimeService(
+            channel="ibm_quantum_platform",
+            token=IBM_API_TOKEN,
+            instance=IBM_CRN,
+        )
+        backend = service.least_busy(operational=True, simulator=False)
+        dev = qml.device(
+            'qiskit.remote',
+            wires=n_qubits,
+            backend=backend,
+            optimization_level=3,
+            resilience_level=0,
+            seed_transpiler=42,
+        )
+    else:
+        dev = qml.device(device_name, wires=n_qubits)
     noisy = (device_name == "default.mixed")
 
     #@qml.qnode(dev)
-    @qml.qnode(dev, interface="torch", diff_method="best")
+    @qml.qnode(dev, interface="torch", diff_method="best", shots=SHOTS)
     def quantum_projection_circuit(inputs, weights):
         # Define noise parameters based on simulation type
         if noisy:
@@ -33,14 +66,11 @@ def get_quantum_circuit(device_name="default.qubit"):
             # No noise (ideal simulation)
             depol_1q = depol_2q = amp_damp = 0.0
 
-        # 1. State Preparation / Data Encoding
-        # H -> Ry(arctan(x)) -> Rz(arctan(x^2))
         for i in range(n_qubits):
             qml.Hadamard(wires=i)
             feature = inputs[..., i]
             qml.RY(torch.arctan(feature), wires=i)
             qml.RZ(torch.arctan(feature**2), wires=i)
-            # Noise after encoding
             if noisy:
                 qml.DepolarizingChannel(depol_1q, wires=i)
                 qml.AmplitudeDamping(amp_damp, wires=i)
@@ -50,15 +80,18 @@ def get_quantum_circuit(device_name="default.qubit"):
         n_layers = weights.shape[0] if len(weights.shape) > 2 else 1
 
         for l in range(n_layers):
-            # CNOT chain: 0->1, 1->2, ..., (n-1)->0
-            for i in range(n_qubits):
-                qml.CNOT(wires=[i, (i + 1) % n_qubits])
-                # Two-qubit gates have higher error rates — apply to both qubits
-                if noisy:
-                    qml.DepolarizingChannel(depol_2q, wires=i)
-                    qml.DepolarizingChannel(depol_2q, wires=(i + 1) % n_qubits)
 
-            # Rotations: R(alpha, beta, gamma)
+            cnot_pairs = [
+                (0, 1), (1, 2), (2, 3), (3, 0),
+                (0, 2), (1, 3), (2, 0), (3, 1)
+            ]
+
+            for ctrl, tgt in cnot_pairs:
+                qml.CNOT(wires=[ctrl, tgt])
+                if noisy:
+                    qml.DepolarizingChannel(depol_2q, wires=ctrl)
+                    qml.DepolarizingChannel(depol_2q, wires=tgt)
+
             for i in range(n_qubits):
                 qml.Rot(weights[l, i, 0], weights[l, i, 1], weights[l, i, 2], wires=i)
                 if noisy:

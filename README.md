@@ -45,12 +45,20 @@ Goals:
 13.03.2026:
 - Check if metrics get logged onto mlflow ✅
 - Let results run on Databricks ✅
-- Include IBM API (Blocked due to conversation with stefan)
 
 16.03.2026:
 - Solve ValueError: Model QDLinear is not supported for saving. (probably for all q models) ✅
-- include qulacs as a noise simulator
-- analyze behaviour of input variables in qlstm and my models (write about it in modeling)
+- include qulacs as a noise simulator (research done but didnt work) ✅
+- analyze behaviour of input variables in qlstm and my models (write about it in modeling) ✅
+- Theoretical Background ✅
+
+18.03.2026
+- Fix Pipeline (Simulator not working) --> does work but takes long ✅
+
+23.03.2026
+- Include IBM API --> (testwise done) ✅
+- adjust circuit ✅
+- lower parameters due to long compute times with simulator ✅
 
 Later:
 - write modeling
