@@ -60,6 +60,9 @@ Goals:
 - adjust circuit ✅
 - lower parameters due to long compute times with simulator ✅
 
+30.03.2026:
+- TODO: Make models trainable on simulator device and forecast on ibm device 
+
 Later:
 - write modeling
 - transfer github
